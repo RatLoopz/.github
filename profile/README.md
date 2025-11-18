@@ -1,6 +1,6 @@
 # 🌐 RatLoopz Community — Learn. Build. Grow. Together.
 
-<img src="https://github.com/user-attachments/assets/5c46d275-1a57-410b-8807-574370fd1d08" width="100%" />
+<img src="https://github.com/user-attachments/assets/7d65b6fc-c1a8-4a06-aa54-082be741f462" width="200" />
 
 <div align="center">
 
@@ -23,9 +23,9 @@ Whether you're starting out or already building, RatLoopz helps you:
 
 - _Work on meaningful, community-driven projects_
 - _Learn practical skills that actually matter_
-- \*Share **knowledge, tools, and resources\***
-- \*Connect with **peers, mentors, and experienced devs\***
-- \*Collaborate across roles — **developers, designers, testers, writers, and mentors\***
+- *Share **knowledge, tools, and resources***
+- *Connect with **peers, mentors, and experienced devs***
+- *Collaborate across roles — **developers, designers, testers, writers, and mentors***
 
 _No gatekeeping. No ego_.  
 Just developers building things that matter and helping each other level up.
@@ -71,8 +71,8 @@ If you're someone who wants to **improve, experiment, and be part of a driven, s
 Whether you're writing your first line of code or polishing advanced projects **RatLoopz** gives you a space to grow without pressure.  
 **Jump in, ask questions, share ideas, join a build — or just explore until you’re ready**.
 
-**\*Every developer starts somewhere.  
-Here, you don’t start alone**.\*
+***Every developer starts somewhere.  
+Here, you don’t start alone**.*
 
 ---
 
@@ -80,7 +80,7 @@ Here, you don’t start alone**.\*
 
 Getting into RatLoopz is simple — just dive in and start building:
 
-1. **\*Join the community** using the button above\*
+1. ***Join the community** using the button above*
 2. _Say hello in our Discord and meet the crew_
 3. _Browse open issues or pick a project that interests you_
 4. _Start contributing at your own pace_
@@ -132,10 +132,10 @@ Every action — big or small — strengthens the loop.
 
 ## 🎉 Final Note
 
-**\*RatLoopz** is shaped by developers who show up, experiment, and build with purpose.  
-Whether you’re here to learn, collaborate, or create something meaningful — you’re part of the loop now.\*
+***RatLoopz** is shaped by developers who show up, experiment, and build with purpose.  
+Whether you’re here to learn, collaborate, or create something meaningful — you’re part of the loop now.*
 
-\*Let’s make something incredible.  
-**Together.\***
+*Let’s make something incredible.  
+**Together.***
 
 ---
