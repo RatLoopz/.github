@@ -1,6 +1,9 @@
-# 🌐 RatLoopz Community — Learn. Build. Grow. Together.
+# 🌐 ***RatLoopz Community — Learn. Build. Grow. Together.***
 
-<img src="https://github.com/user-attachments/assets/7d65b6fc-c1a8-4a06-aa54-082be741f462" width="200" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/34d94b0d-f1d7-4d1e-8dda-5245db617eab" width="200" />
+</p>
+
 
 <div align="center">
 
@@ -86,8 +89,8 @@ Getting into RatLoopz is simple — just dive in and start building:
 4. _Start contributing at your own pace_
 5. _Ask questions, pair up, collaborate — that’s what we’re here for_
 
-> You don’t need to be “ready.”  
-> Starting is enough.
+ ***You don’t need to be “ready.”  
+ Starting is enough.***
 
 ---
 
