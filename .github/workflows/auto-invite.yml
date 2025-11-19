@@ -9,9 +9,9 @@ permissions:
 
 jobs:
   automate_invite:
-    if: >
-      contains(github.event.issue.labels.*.name, 'welcome') || 
-      (github.event.label.name == 'welcome')
+    if: |
+      contains(join(github.event.issue.labels.*.name, ','), 'welcome') ||
+      (github.event.action == 'labeled' && github.event.label.name == 'welcome')
     runs-on: ubuntu-latest
 
     steps:
