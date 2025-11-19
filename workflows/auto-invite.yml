@@ -1,0 +1,78 @@
+name: "Auto-invite on invitation issue"
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  invite:
+    if: >
+      contains(github.event.issue.labels.*.name, 'welcome') ||
+      github.event.issue.title == 'Please invite me to RatLoopz'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Invite user (script)
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ORG_INVITE_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const org = context.repo.owner;
+            const body = issue.body || "";
+
+            // Try to extract the github_username from the issue body produced by the form.
+            // Typical rendered line looks like: "**GitHub username:** janedoe"
+            // We'll attempt several regex patterns for robustness.
+            let username = null;
+            const patterns = [
+              /GitHub username:\s*`?@?([A-Za-z0-9-]+)`?/i,
+              /\*\*GitHub username\*\*:\s*`?@?([A-Za-z0-9-]+)`?/i,
+              /github_username:\s*`?@?([A-Za-z0-9-]+)`?/i
+            ];
+            for (const p of patterns) {
+              const m = body.match(p);
+              if (m) { username = m[1]; break; }
+            }
+
+            if (!username && issue.user && issue.user.login) {
+              // Fallback to issue author
+              username = issue.user.login;
+            }
+
+            if (!username) {
+              await github.issues.createComment({
+                owner: org,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: "⚠️ Couldn't detect a GitHub username from the form. Please reply with your handle so we can invite you."
+              });
+              return;
+            }
+
+            // Fetch the user to get the id
+            try {
+              const u = await github.users.getByUsername({ username });
+              const invite = await github.request('POST /orgs/{org}/invitations', {
+                org: org,
+                invitee_id: u.data.id,
+                role: 'direct_member'
+              });
+              await github.issues.createComment({
+                owner: org,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `✅ Invitation sent to @${username}.`
+              });
+            } catch (e) {
+              await github.issues.createComment({
+                owner: org,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `❌ Failed to invite @${username}. Error: ${e.message}`
+              });
+              throw e;
+            }

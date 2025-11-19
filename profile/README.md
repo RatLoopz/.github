@@ -57,7 +57,7 @@ If you're someone who wants to **improve, experiment, and be part of a driven, s
     <td align="center">
       <h3>🤝 Join the RatLoopz Community</h3>
       <p><i>Collaborate. Build. Grow. And be part of something that actually ships.</i></p>
-      <a href="https://github.com/ratloopz/.github/issues/new?labels=community-join&template=join.yml&title=Invite+me+to+RatLoopz">
+      <a href="https://github.com/ratloopz/.github/issues/new?template=invitation.yml&title=Please+invite+me+to+RatLoopz">
         <img src="https://img.shields.io/badge/JOIN%20RATLOOPZ-0A7AFF?style=for-the-badge&logo=github&logoColor=white" width="180" />
       </a>
     </td>
