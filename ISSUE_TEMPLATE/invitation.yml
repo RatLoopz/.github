@@ -1,0 +1,20 @@
+name: "Invitation — Request to join RatLoopz"
+description: "Fill this form to request an invitation to the RatLoopz."
+title: "Please invite me to RatLoopz"
+labels: ["welcome", "invite-request"]
+assignees: []
+body:
+  - type: input
+    id: github_username
+    attributes:
+      label: "GitHub username"
+      description: "Your GitHub handle (without @)."
+      placeholder: "Enter Your GitHub username"
+      required: true
+
+  - type: input
+    id: email
+    attributes:
+      label: "Email (optional)"
+      description: "Public email to contact you (optional)."
+      placeholder: "developer@gmail.com"
