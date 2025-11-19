@@ -6,8 +6,6 @@ on:
 
 jobs:
   invite:
-    # Only run when the issue has the 'welcome' label
-    # AND the title matches our invitation title
     if: >
       contains(github.event.issue.labels.*.name, 'welcome') &&
       github.event.issue.title == 'Please invite me to RatLoopz'
@@ -22,21 +20,14 @@ jobs:
             const issue = context.payload.issue;
             const body = issue.body || '';
 
-            // Try to extract GitHub username from the issue form output
-            // Issue forms render roughly as:
-            // ### GitHub username
-            // someusername
             function extractUsernameFromBody(text) {
               const match = text.match(/###\s*GitHub username\s*\n+([A-Za-z0-9-]+)/i);
-              if (match && match[1]) {
-                return match[1].trim();
-              }
+              if (match && match[1]) return match[1].trim();
               return null;
             }
 
             let username = extractUsernameFromBody(body);
 
-            // Fallback: issue author
             if (!username && issue.user && issue.user.login) {
               username = issue.user.login;
             }
@@ -46,31 +37,51 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
-                body: "⚠️ Could not determine your GitHub username from the form. Please reply with your GitHub handle."
+                body: "⚠️ Could not determine your GitHub username. Please reply with your GitHub handle."
               });
-              core.setFailed("Username not found in issue body or author.");
               return;
             }
 
             try {
-              // Look up the user by username
               const { data: user } = await github.rest.users.getByUsername({ username });
 
-              // Create organization invitation
               const invite = await github.rest.orgs.createInvitation({
-                org: context.repo.owner,       // 'ratloopz'
-                invitee_id: user.id,           // invite by user ID
-                role: 'direct_member'          // or 'admin' / 'billing_manager' if you really want
+                org: context.repo.owner,
+                invitee_id: user.id,
+                role: 'direct_member'
               });
 
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
-                body: `✅ Invitation sent to @${username}. They should receive an email/notification soon.`
+                body: `✅ Invitation sent to @${username}. Check your email or GitHub notifications.`
               });
 
             } catch (error) {
+              // Handle the "already a member" case
+              if (error.message.includes("Invitee is already a part of this organization")) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `ℹ️ @${username} is **already a member** of RatLoopz. No invite needed.`
+                });
+                return; // Do NOT mark the workflow as failed
+              }
+
+              // Handle pending invite case
+              if (error.message.includes("has already been invited")) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `ℹ️ @${username} already has a **pending invite**. Check your email or notifications.`
+                });
+                return;
+              }
+
+              // Any other unknown error
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
