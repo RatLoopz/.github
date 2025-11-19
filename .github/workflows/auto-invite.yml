@@ -1,13 +1,15 @@
+name: Invite on welcome label
+
 on:
   issues:
-    types: [labeled]
+    types: [opened, labeled]
 
 permissions:
   issues: write
 
 jobs:
   automate_invite:
-    if: contains(github.event.label.name, 'welcome')
+    if: contains(github.event.issue.labels.*.name, 'welcome')
     runs-on: ubuntu-latest
 
     steps:
