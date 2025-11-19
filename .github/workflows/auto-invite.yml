@@ -1,85 +1,25 @@
-name: "Auto-invite on invitation issue"
-
 on:
   issues:
-    types: [opened]
+    types: [labeled]
 
 permissions:
-  contents: read
   issues: write
-  organization: write
-  members: write
 
 jobs:
-  invite:
-    if: >
-      contains(github.event.issue.labels.*.name, 'welcome') ||
-      github.event.issue.title == 'Please invite me to RatLoopz'
+  automate_invite:
+    if: contains(github.event.label.name, 'welcome')
     runs-on: ubuntu-latest
+
     steps:
-      - name: Invite user (script)
-        uses: actions/github-script@v7
+      - name: Invite on label
+        uses: vj-abigo/invite-on-label@v1.4
         with:
-          github-token: ${{ secrets.ORG_INVITE_TOKEN }}
-          script: |
-            const issue = context.payload.issue;
-            const org = context.repo.owner;
-            const body = issue.body || "";
-
-            if (!github.issues) {
-              throw new Error(
-                "❌ github.issues is undefined. Your ORG_INVITE_TOKEN does NOT have 'issues:write' or 'repo' permissions."
-              );
-            }
-
-            let username = null;
-            const patterns = [
-              /GitHub username:\s*`?@?([A-Za-z0-9-]+)`?/i,
-              /\*\*GitHub username\*\*:\s*`?@?([A-Za-z0-9-]+)`?/i,
-              /github_username:\s*`?@?([A-Za-z0-9-]+)`?/i
-            ];
-
-            for (const p of patterns) {
-              const m = body.match(p);
-              if (m) { username = m[1]; break; }
-            }
-
-            if (!username && issue.user?.login) {
-              username = issue.user.login;
-            }
-
-            if (!username) {
-              await github.issues.createComment({
-                owner: org,
-                repo: context.repo.repo,
-                issue_number: issue.number,
-                body: "⚠️ Couldn't detect a GitHub username. Please reply with your handle."
-              });
-              return;
-            }
-
-            try {
-              const u = await github.users.getByUsername({ username });
-
-              await github.request('POST /orgs/{org}/invitations', {
-                org: org,
-                invitee_id: u.data.id,
-                role: 'direct_member'
-              });
-
-              await github.issues.createComment({
-                owner: org,
-                repo: context.repo.repo,
-                issue_number: issue.number,
-                body: `✅ Invitation sent to @${username}.`
-              });
-
-            } catch (e) {
-              await github.issues.createComment({
-                owner: org,
-                repo: context.repo.repo,
-                issue_number: issue.number,
-                body: `❌ Error inviting @${username}: ${e.message}`
-              });
-              throw e;
-            }
+          organization: RatLoopz
+          label: welcome
+          comment: >
+            <b>🎉 Invitation sent! Check your GitHub profile → "Your organizations".</b><br>
+            After accepting, make your membership public so it appears on your profile.
+          existingMemberMessage: >
+            You are already a member of the organization.
+        env:
+          INVITE_TOKEN: ${{ secrets.ORG_INVITE_TOKEN }}
