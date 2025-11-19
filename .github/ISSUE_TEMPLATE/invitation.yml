@@ -10,7 +10,8 @@ body:
       label: "GitHub username"
       description: "Your GitHub handle (without @)."
       placeholder: "Enter Your GitHub username"
-    required: true
+    validations:
+      required: true
 
   - type: input
     id: email
