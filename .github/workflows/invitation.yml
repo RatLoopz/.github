@@ -1,29 +1,18 @@
-name: Invite on welcome label
-
 on:
   issues:
-    types: [opened, labeled]
-
-permissions:
-  issues: write
+    types: [labeled]
 
 jobs:
   automate_invite:
-    if: |
-      contains(join(github.event.issue.labels.*.name, ','), 'welcome') ||
-      (github.event.action == 'labeled' && github.event.label.name == 'welcome')
     runs-on: ubuntu-latest
-
     steps:
       - name: Invite on label
         uses: vj-abigo/invite-on-label@v1.4
         with:
-          organization: RatLoopz
+          organization: ratloopz
           label: welcome
-          comment: >
-            <b>🎉 Invitation sent! Check your GitHub profile → "Your organizations".</b><br>
-            After accepting, make your membership public so it appears on your profile.
-          existingMemberMessage: >
-            You are already a member of the organization.
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          comment: '<b>An invitation has been sent to join ratloopz.</b><br><br>Check your profile menu → “Your organizations”. After accepting, set your membership to public so it shows on your profile.'
+          existingMemberMessage: 'You are already a member of this organization.'
         env:
           INVITE_TOKEN: ${{ secrets.ORG_INVITE_TOKEN_NEW }}
