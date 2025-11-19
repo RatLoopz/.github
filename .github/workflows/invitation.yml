@@ -26,4 +26,4 @@ jobs:
           existingMemberMessage: >
             You are already a member of the organization.
         env:
-          INVITE_TOKEN: ${{ secrets.ORG_INVITE_TOKEN }}
+          INVITE_TOKEN: ${{ secrets.ORG_INVITE_TOKEN_NEW }}
