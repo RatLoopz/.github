@@ -12,103 +12,110 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Invite user and prepare email data
+      - name: Invite user to organization with prepared email
         id: invite_user
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.ORG_INVITE_TOKEN }}
           script: |
-            const githubForOrg = github;
-            const githubForComments = new GitHub(process.env.GITHUB_TOKEN);
+            const core = require('@actions/core');
             const issue = context.payload.issue;
             const body = issue.body || '';
 
             function extractUsernameFromBody(text) {
               const match = text.match(/###\s*GitHub username\s*\n+([A-Za-z0-9-]+)/i);
-              if (match && match[1]) return match[1].trim();
-              return null;
+              return match ? match[1].trim() : null;
             }
 
             function extractEmailFromBody(text) {
-              // Matches the line right after "### Email"
               const match = text.match(/###\s*Email[^\n]*\n+([^\n]+)/i);
-              if (match && match[1]) return match[1].trim();
-              return null;
+              return match ? match[1].trim() : null;
             }
 
-            let username = extractUsernameFromBody(body);
+            let username = extractUsernameFromBody(body) 
+                        || issue.user?.login 
+                        || null;
+
             let email = extractEmailFromBody(body);
 
-            if (!username && issue.user && issue.user.login) {
-              username = issue.user.login;
-            }
-
-            async function botComment(message) {
-              await githubForComments.rest.issues.createComment({
+            if (!username) {
+              await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
-                body: message,
+                body: "⚠️ Could not determine your GitHub username. Please reply with your GitHub handle."
               });
-            }
-
-            if (!username) {
-              await botComment("⚠️ Could not determine your GitHub username. Please reply with it.");
-              core.setOutput('email', email || '');
-              core.setOutput('username', '');
-              core.setOutput('invite_status', 'no-username');
               return;
             }
 
             try {
-              // Look up the user by username
-              const { data: user } = await githubForOrg.rest.users.getByUsername({ username });
+              // Validate username exists
+              const { data: user } = await github.rest.users.getByUsername({ username });
 
-              // Create org invitation using PAT
-              await githubForOrg.rest.orgs.createInvitation({
+              // Send org invite
+              await github.rest.orgs.createInvitation({
                 org: context.repo.owner,
                 invitee_id: user.id,
                 role: 'direct_member'
               });
 
-              await botComment(`✅ Invitation sent to @${username}. Check your GitHub notifications or email.`);
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `✅ Invitation sent to @${username}. Check your email or GitHub notifications.`
+              });
 
               core.setOutput('email', email || '');
               core.setOutput('username', username);
               core.setOutput('invite_status', 'invited');
-
             } catch (error) {
-              const msg = error.message || '';
-
-              if (msg.includes("Invitee is already a part of this organization")) {
-                await botComment(`ℹ️ @${username} is already a member of RatLoopz. No invite needed.`);
+              
+              // Already a member
+              if (error.message.includes("Invitee is already a part of this organization")) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `ℹ️ @${username} is already a member of RatLoopz.`
+                });
+                core.setOutput('invite_status', 'already_member');
                 core.setOutput('email', email || '');
                 core.setOutput('username', username);
-                core.setOutput('invite_status', 'already-member');
                 return;
               }
 
-              if (msg.includes("has already been invited")) {
-                await botComment(`ℹ️ @${username} already has a pending invite. Check your email/notifications.`);
+              // Pending invite
+              if (error.message.includes("has already been invited")) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `ℹ️ @${username} already has a pending invite. Check your email or GitHub notifications.`
+                });
+                core.setOutput('invite_status', 'pending');
                 core.setOutput('email', email || '');
                 core.setOutput('username', username);
-                core.setOutput('invite_status', 'already-invited');
                 return;
               }
 
-              await botComment(`❌ Failed to invite @${username}. Error: \`${msg}\``);
-              core.setOutput('email', email || '');
-              core.setOutput('username', username || '');
+              // Unknown error
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `❌ Failed to invite @${username}. Error: \`${error.message}\``
+              });
               core.setOutput('invite_status', 'error');
-              core.setFailed(msg);
+              core.setOutput('email', email || '');
+              core.setOutput('username', username);
+              core.setFailed(error.message);
             }
-        env:
-          # Used for posting comments as the GitHub Actions bot
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Send welcome email via Gmail
-        # Only send if we have an email AND the invite didn't hard-fail
-        if: steps.invite_user.outputs.email != '' && steps.invite_user.outputs.invite_status != 'error'
+        if: >
+          steps.invite_user.outputs.email != '' &&
+          steps.invite_user.outputs.invite_status != 'error'
         uses: dawidd6/action-send-mail@v4
         with:
           server_address: smtp.gmail.com
@@ -116,19 +123,25 @@ jobs:
           secure: true
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: "Your RatLoopz GitHub invitation"
+          subject: "Your RatLoopz GitHub Invitation"
           to: ${{ steps.invite_user.outputs.email }}
           from: "${{ secrets.MAIL_FROM_NAME || 'RatLoopz' }} <${{ secrets.MAIL_USERNAME }}>"
           html_body: |
             <h2>Welcome to RatLoopz 👋</h2>
+
             <p>Hi @${{ steps.invite_user.outputs.username }},</p>
 
-            <p>We've just sent you a GitHub organization invitation for <b>RatLoopz</b>.</p>
-            <p>
-              Next steps:<br/>
-              1. Open GitHub and check the notification bell, or your email inbox, for the invite.<br/>
-              2. Accept the invitation to join the RatLoopz organization.<br/>
-              3. Once accepted, you’ll see RatLoopz under your organizations.
-            </p>
+            <p>Your invitation to join the <b>RatLoopz</b> GitHub organization has been sent.</p>
 
-            <p><br/>The RatLoopz team</p>
+            <h3>Next steps</h3>
+            <ol>
+              <li>Check your email or GitHub notifications and accept the organization invite.</li>
+              <li>After joining, visit: <br/>
+                  <b>https://github.com/orgs/RatLoopz/people</b></li>
+              <li>Find yourself in the list and set your visibility to:<br/>
+                  <b>Public</b><br/>
+                  (Otherwise nobody can see that you’re a member.)</li>
+            </ol>
+
+            <p>Welcome aboard! 🚀</p>
+            <p><b>The RatLoopz Team</b></p>
