@@ -18,7 +18,7 @@ jobs:
         with:
           github-token: ${{ secrets.ORG_INVITE_TOKEN }}
           script: |
-            const core = require('@actions/core');
+            // core, github, context are already injected by github-script
             const issue = context.payload.issue;
             const body = issue.body || '';
 
@@ -49,10 +49,8 @@ jobs:
             }
 
             try {
-              // Validate username exists
               const { data: user } = await github.rest.users.getByUsername({ username });
 
-              // Send org invite
               await github.rest.orgs.createInvitation({
                 org: context.repo.owner,
                 invitee_id: user.id,
@@ -69,9 +67,9 @@ jobs:
               core.setOutput('email', email || '');
               core.setOutput('username', username);
               core.setOutput('invite_status', 'invited');
+
             } catch (error) {
-              
-              // Already a member
+
               if (error.message.includes("Invitee is already a part of this organization")) {
                 await github.rest.issues.createComment({
                   owner: context.repo.owner,
@@ -85,7 +83,6 @@ jobs:
                 return;
               }
 
-              // Pending invite
               if (error.message.includes("has already been invited")) {
                 await github.rest.issues.createComment({
                   owner: context.repo.owner,
@@ -99,13 +96,13 @@ jobs:
                 return;
               }
 
-              // Unknown error
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
                 body: `❌ Failed to invite @${username}. Error: \`${error.message}\``
               });
+
               core.setOutput('invite_status', 'error');
               core.setOutput('email', email || '');
               core.setOutput('username', username);
@@ -136,11 +133,11 @@ jobs:
             <h3>Next steps</h3>
             <ol>
               <li>Check your email or GitHub notifications and accept the organization invite.</li>
-              <li>After joining, visit: <br/>
+              <li>After accepting, visit:<br/>
                   <b>https://github.com/orgs/RatLoopz/people</b></li>
-              <li>Find yourself in the list and set your visibility to:<br/>
-                  <b>Public</b><br/>
-                  (Otherwise nobody can see that you’re a member.)</li>
+              <li>Find your profile and set its visibility to:<br/>
+                  <b>Public</b></li>
+              <li>If your profile remains private, others won’t see your membership.</li>
             </ol>
 
             <p>Welcome aboard! 🚀</p>
