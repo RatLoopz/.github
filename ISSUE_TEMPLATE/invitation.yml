@@ -2,7 +2,6 @@ name: "Invitation — Request to join RatLoopz"
 description: "Fill this form to request an invitation to the RatLoopz."
 title: "Please invite me to RatLoopz"
 labels: ["welcome", "invite-request"]
-assignees: []
 body:
   - type: input
     id: github_username
