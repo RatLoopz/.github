@@ -2,7 +2,7 @@ name: "Auto-invite on invitation issue"
 
 on:
   issues:
-    types: [opened]
+    types: [opened, reopened]
 
 jobs:
   invite:
