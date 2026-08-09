@@ -1,9 +1,9 @@
 # 🌐 ***RatLoopz Community — Learn. Build. Grow. Together.***
 
-**RatLoopz — an open-source collective of 250+ developers, founded and led by Dipjyoti Das ([dipexplorer](https://github.com/dipexplorer) | [LinkedIn](https://www.linkedin.com/in/dipjyotidas)).**
+**RatLoopz is a fast-growing open-source developer collective of 250+ software engineers, designers, and tech enthusiasts. Founded and led by Dipjyoti Das ([dipexplorer](https://github.com/dipexplorer) | [LinkedIn](https://www.linkedin.com/in/dipjyotidas)), we focus on collaborative software development, building real-world applications, and fostering a strong tech ecosystem.**
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/34d94b0d-f1d7-4d1e-8dda-5245db617eab" width="200" />
+  <img alt="RatLoopz Open Source Developer Community Banner" src="https://github.com/user-attachments/assets/34d94b0d-f1d7-4d1e-8dda-5245db617eab" width="200" />
 </p>
 
 
@@ -54,17 +54,17 @@ If you're someone who wants to **improve, experiment, and be part of a driven, s
 <table align="center">
   <tr>
     <td>
-      <img src="https://github.com/user-attachments/assets/44338fc7-b36a-4027-adcd-0735f748a978" width="130" />
+      <img alt="RatLoopz Left Decorative Icon" src="https://github.com/user-attachments/assets/44338fc7-b36a-4027-adcd-0735f748a978" width="130" />
     </td>
     <td align="center">
       <h3>🤝 Join the RatLoopz Community</h3>
       <p><i>Collaborate. Build. Grow. And be part of something that actually ships.</i></p>
       <a href="https://github.com/ratloopz/.github/issues/new?template=invitation.yml&title=Please+invite+me+to+RatLoopz">
-        <img src="https://img.shields.io/badge/JOIN%20RATLOOPZ-0A7AFF?style=for-the-badge&logo=github&logoColor=white" width="180" />
+        <img alt="Join RatLoopz Open Source Developer Community Badge" src="https://img.shields.io/badge/JOIN%20RATLOOPZ-0A7AFF?style=for-the-badge&logo=github&logoColor=white" width="180" />
       </a>
     </td>
     <td>
-      <img src="https://github.com/user-attachments/assets/ea9da5a6-09c4-4777-8707-4160a7220e94" width="130" />
+      <img alt="RatLoopz Right Decorative Icon" src="https://github.com/user-attachments/assets/ea9da5a6-09c4-4777-8707-4160a7220e94" width="130" />
     </td>
   </tr>
 </table>
