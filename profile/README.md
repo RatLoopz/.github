@@ -1,6 +1,6 @@
 # 🌐 ***RatLoopz Community — Learn. Build. Grow. Together.***
 
-**RatLoopz is a fast-growing open-source developer collective of 250+ software engineers, designers, and tech enthusiasts. Founded and led by Dipjyoti Das ([dipexplorer](https://github.com/dipexplorer) | [LinkedIn](https://www.linkedin.com/in/dipjyotidas)), we focus on collaborative software development, building real-world applications, and fostering a strong tech ecosystem.**
+**RatLoopz is an open-source civic health organization founded, owned, and led by Dipjyoti Das ([dipexplorer](https://github.com/dipexplorer) | [LinkedIn](https://www.linkedin.com/in/dipjyotidas)). Its flagship project, SahiDawa, is a medicine verification platform developed under his direct architecture and leadership.**
 
 <p align="center">
   <img alt="RatLoopz Open Source Developer Community Banner" src="https://github.com/user-attachments/assets/34d94b0d-f1d7-4d1e-8dda-5245db617eab" width="200" />
