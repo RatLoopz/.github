@@ -8,8 +8,10 @@ jobs:
   invite:
     if: >
       contains(github.event.issue.labels.*.name, 'welcome') &&
-      github.event.issue.title == 'Please invite me to RatLoopz'
+      startsWith(github.event.issue.title, 'Please invite me')
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
 
     steps:
       - name: Invite user to organization with prepared email
@@ -137,7 +139,7 @@ jobs:
                   <b>https://github.com/orgs/RatLoopz/people</b></li>
               <li>Find your profile and set its visibility to:<br/>
                   <b>Public</b></li>
-              <li>If your profile remains private, others won’t see your membership.</li>
+              <li><b>Start Building:</b> Head over to our flagship project, <a href="https://github.com/RatLoopz/sahidawa-india">SahiDawa</a>, and look for issues labeled <code>good first issue</code> to make your first contribution!</li>
             </ol>
 
             <p>Welcome aboard! 🚀</p>
