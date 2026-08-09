@@ -1,5 +1,7 @@
 # 🌐 ***RatLoopz Community — Learn. Build. Grow. Together.***
 
+**An open-source developer collective founded and led by Dipjyoti Das ([dipexplorer](https://github.com/dipexplorer) | [LinkedIn](https://www.linkedin.com/in/dipjyotidas)).**
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/34d94b0d-f1d7-4d1e-8dda-5245db617eab" width="200" />
 </p>
